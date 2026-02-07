@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cc-news-analyzer"
+version = "0.1.0"
+description = "A CLI tool for analyzing Common Crawl News (CC-NEWS) WARC datasets"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "warcio>=1.7.4",
+    "click>=8.1.0",
+    "jupyterlab>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]
+
+[project.scripts]
+cc-news = "cc_news_analyzer.cli:cli"
+
+[tool.setuptools.packages.find]
+include = ["cc_news_analyzer*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
