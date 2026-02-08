@@ -5,6 +5,8 @@ This is a tool that allows anyone to pull a CC-NEWS dataset and explore it.
 
 > Insight: This could potentially be a CLI tool rather than a React tool. Remember the idea: Anything your UI can do should be exposed via tools so agents can do it. Think in terms of tools. Let the agent compose tool calls.
 
+The human analyst uses the VS Code Google Colab extension to download and explore WARC files in a remote Google Colab env. They will open a Jupyter notebook in VS Code -> Select Kernel -> Colab -> create or select a kernel.
+
 ## Use Cases
 
 As an analyst:
@@ -56,6 +58,6 @@ Tools:
 * Clone a common crawl dataset for any given month
 * Unzip the files and extract the WARC files
 
-Note: An Agent should be able to read the README to undrestand what tools it has and run those CLI commads. Only commands defined in the package.json file should be allowed.
+Note: An Agent should be able to read the README to understand what tools it has and run those CLI commads. Only commands defined in the package.json file should be allowed.
 
 Ideally, the env will be dockerized so it can run locally or in the cloud.
