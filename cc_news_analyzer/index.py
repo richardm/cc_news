@@ -9,6 +9,45 @@ from datetime import datetime
 CC_NEWS_BASE_URL = "https://data.commoncrawl.org"
 
 
+def parse_month_date(date_str: str) -> tuple[int, int]:
+    """Parse a ``MM-YYYY`` date string into (year, month).
+
+    Args:
+        date_str: A date string in ``MM-YYYY`` format (e.g. ``"02-2026"``).
+
+    Returns:
+        A tuple of ``(year, month)`` as integers.
+
+    Raises:
+        ValueError: If the string is not in ``MM-YYYY`` format or the values
+            are out of range.
+    """
+    if not date_str or "-" not in date_str:
+        raise ValueError(f"Invalid date format: {date_str!r}. Expected MM-YYYY.")
+
+    parts = date_str.split("-")
+    if len(parts) != 2:
+        raise ValueError(f"Invalid date format: {date_str!r}. Expected MM-YYYY.")
+
+    mm_str, yyyy_str = parts
+
+    if len(mm_str) != 2 or len(yyyy_str) != 4:
+        raise ValueError(f"Invalid date format: {date_str!r}. Expected MM-YYYY.")
+
+    try:
+        month = int(mm_str)
+        year = int(yyyy_str)
+    except ValueError:
+        raise ValueError(
+            f"Invalid date format: {date_str!r}. Expected MM-YYYY."
+        ) from None
+
+    if month < 1 or month > 12:
+        raise ValueError(f"Month must be between 1 and 12, got {month}")
+
+    return year, month
+
+
 def build_index_url(year: int, month: int) -> str:
     """Build the CC-NEWS WARC index URL for a given year and month.
 
@@ -22,8 +61,8 @@ def build_index_url(year: int, month: int) -> str:
     Raises:
         ValueError: If year or month are out of reasonable range.
     """
-    if year < 2016 or year > 2100:
-        raise ValueError(f"Year must be between 2016 and 2100, got {year}")
+    if year < 2016 or year > 2030:
+        raise ValueError(f"Year must be between 2016 and 2030, got {year}")
     if month < 1 or month > 12:
         raise ValueError(f"Month must be between 1 and 12, got {month}")
 
@@ -73,7 +112,7 @@ def fetch_warc_paths(year: int, month: int, dest_dir: str) -> list[str]:
         shutil.copyfileobj(f_in, f_out)
 
     # Parse paths
-    with open(txt_path, "r") as f:
+    with open(txt_path) as f:
         paths = [line.strip() for line in f if line.strip()]
 
     return paths
