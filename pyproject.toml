@@ -17,6 +17,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
+    "ruff>=0.9.0",
 ]
 
 [project.scripts]
@@ -24,6 +25,23 @@ cc-news = "cc_news_analyzer.cli:cli"
 
 [tool.setuptools.packages.find]
 include = ["cc_news_analyzer*"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = ["cc_news_analyzer", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "RUF",  # ruff-specific rules
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

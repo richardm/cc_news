@@ -33,12 +33,14 @@ def list_warc_files(directory: str) -> list[dict[str, Any]]:
         if filename.endswith((".warc", ".warc.gz")):
             full_path = os.path.join(directory, filename)
             size_bytes = os.path.getsize(full_path)
-            results.append({
-                "name": filename,
-                "path": full_path,
-                "size_bytes": size_bytes,
-                "size_mb": round(size_bytes / (1024 * 1024), 1),
-            })
+            results.append(
+                {
+                    "name": filename,
+                    "path": full_path,
+                    "size_bytes": size_bytes,
+                    "size_mb": round(size_bytes / (1024 * 1024), 1),
+                }
+            )
 
     return results
 

@@ -7,7 +7,19 @@ description: Analyze a Python function or code snippet, identify its behavior an
 
 Generate thorough Python `unittest` test cases for a given function or code snippet.
 
+This skill follows the **TDD workflow** defined in `AGENTS.md`. The standard cycle is:
+1. Write a failing test first
+2. Implement the minimal code to make it pass
+3. Run validation (lint + format + tests)
+4. Fix any issues
+
 ## Workflow
+
+### Step 0: TDD — Write the test first
+
+If you are implementing new functionality, write the test **before** writing the implementation. The test should fail initially — this confirms it is testing the right thing. Only then proceed to implement the code to make it pass.
+
+If you are adding tests for existing code, skip this step and go to Step 1.
 
 ### Step 1: Analyze the Target
 
@@ -85,13 +97,20 @@ if __name__ == "__main__":
 
 ### Step 4: Validate
 
-After writing tests, run them:
+After writing tests, run the full validation pipeline (lint, format, test):
 
 ```bash
-python -m pytest tests/test_<module>.py -v
+# Lint and auto-fix
+ruff check . --fix
+
+# Format
+ruff format .
+
+# Run the tests
+pytest tests/ -v
 ```
 
-Fix any failures before finishing.
+Fix any lint errors or test failures before finishing. Repeat until all checks pass.
 
 ## Naming Conventions
 
