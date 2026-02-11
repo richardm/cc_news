@@ -118,6 +118,34 @@ def fetch_warc_paths(year: int, month: int, dest_dir: str) -> list[str]:
     return paths
 
 
+def download_warc_by_path(warc_path: str, dest_dir: str) -> str:
+    """Download a WARC file given its relative path in the CC-NEWS dataset.
+
+    The relative path is the format returned by :func:`fetch_warc_paths`, e.g.
+    ``"crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"``.
+
+    Args:
+        warc_path: Relative WARC path within the Common Crawl dataset.
+        dest_dir: Directory where the file should be saved.
+
+    Returns:
+        The local file path of the downloaded WARC file.
+
+    Raises:
+        ValueError: If *warc_path* is empty or has no filename component.
+        OSError: If the download fails.
+    """
+    if not warc_path or not warc_path.strip():
+        raise ValueError("WARC path must not be empty.")
+
+    filename = os.path.basename(warc_path.strip())
+    if not filename:
+        raise ValueError(f"Cannot determine filename from WARC path: {warc_path!r}")
+
+    url = f"{CC_NEWS_BASE_URL}/{warc_path.strip()}"
+    return download_warc(url, dest_dir)
+
+
 def build_warc_urls(warc_paths: list[str]) -> list[str]:
     """Convert relative WARC paths to full download URLs.
 

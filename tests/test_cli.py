@@ -81,6 +81,102 @@ class TestGetIndexCmd(unittest.TestCase):
         self.assertNotEqual(result.exit_code, 0)
 
 
+class TestGetWarcCmd(unittest.TestCase):
+    """Tests for the get-warc CLI command."""
+
+    def setUp(self):
+        """Set up the CLI test runner."""
+        self.runner = CliRunner()
+
+    @patch("cc_news_analyzer.cli.download_warc_by_path")
+    def test_downloads_warc_file(self, mock_download):
+        """Should call download_warc_by_path with the given path and .tmp dir."""
+        mock_download.return_value = ".tmp/CC-NEWS-20260204051206-06668.warc.gz"
+
+        result = self.runner.invoke(
+            cli,
+            [
+                "get-warc",
+                "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz",
+            ],
+        )
+
+        self.assertEqual(result.exit_code, 0)
+        mock_download.assert_called_once_with(
+            "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz",
+            ".tmp",
+        )
+        self.assertIn("CC-NEWS-20260204051206-06668.warc.gz", result.output)
+
+    @patch("cc_news_analyzer.cli.download_warc_by_path")
+    def test_custom_dest_dir(self, mock_download):
+        """Should use the --dest option when provided."""
+        mock_download.return_value = "/data/CC-NEWS-20260204051206-06668.warc.gz"
+
+        result = self.runner.invoke(
+            cli,
+            [
+                "get-warc",
+                "--dest",
+                "/data",
+                "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz",
+            ],
+        )
+
+        self.assertEqual(result.exit_code, 0)
+        mock_download.assert_called_once_with(
+            "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz",
+            "/data",
+        )
+
+    def test_missing_argument(self):
+        """Should fail when no WARC path argument is provided."""
+        result = self.runner.invoke(cli, ["get-warc"])
+        self.assertNotEqual(result.exit_code, 0)
+
+    @patch("cc_news_analyzer.cli.download_warc_by_path")
+    def test_empty_path_shows_error(self, mock_download):
+        """Should show an error when an empty path is given."""
+        mock_download.side_effect = ValueError("WARC path must not be empty.")
+
+        result = self.runner.invoke(cli, ["get-warc", ""])
+
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn("WARC path must not be empty", result.output)
+
+    @patch("cc_news_analyzer.cli.download_warc_by_path")
+    def test_network_error_shows_error(self, mock_download):
+        """Should display an error when the download fails."""
+        mock_download.side_effect = OSError("Network error")
+
+        result = self.runner.invoke(
+            cli,
+            [
+                "get-warc",
+                "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz",
+            ],
+        )
+
+        self.assertNotEqual(result.exit_code, 0)
+
+    @patch("cc_news_analyzer.cli.download_warc_by_path")
+    def test_output_shows_downloaded_path(self, mock_download):
+        """Should show the downloaded file path in output."""
+        mock_download.return_value = ".tmp/CC-NEWS-20260204051206-06668.warc.gz"
+
+        result = self.runner.invoke(
+            cli,
+            [
+                "get-warc",
+                "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz",
+            ],
+        )
+
+        self.assertEqual(result.exit_code, 0)
+        self.assertIn("Downloaded", result.output)
+        self.assertIn(".tmp/CC-NEWS-20260204051206-06668.warc.gz", result.output)
+
+
 class TestCountRecordsCmd(unittest.TestCase):
     """Smoke tests for the existing count-records command."""
 

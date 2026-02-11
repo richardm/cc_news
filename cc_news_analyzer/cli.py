@@ -4,7 +4,11 @@ from datetime import datetime
 
 import click
 
-from cc_news_analyzer.index import fetch_warc_paths, parse_month_date
+from cc_news_analyzer.index import (
+    download_warc_by_path,
+    fetch_warc_paths,
+    parse_month_date,
+)
 from cc_news_analyzer.warc import count_records as _count_records
 
 
@@ -45,6 +49,27 @@ def get_index_cmd(date: str | None):
     click.echo(f"Found {len(paths)} WARC file(s) for {year}-{month:02d}:")
     for path in paths:
         click.echo(path)
+
+
+@cli.command("get-warc")
+@click.argument("warc_path")
+@click.option(
+    "--dest",
+    default=".tmp",
+    help="Destination directory for the downloaded file (defaults to .tmp).",
+)
+def get_warc_cmd(warc_path: str, dest: str):
+    """Download a WARC file from the CC-NEWS dataset by its relative path.
+
+    WARC_PATH is the relative path, e.g.
+    crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz
+    """
+    try:
+        local_path = download_warc_by_path(warc_path, dest)
+    except ValueError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    click.echo(f"Downloaded: {local_path}")
 
 
 if __name__ == "__main__":

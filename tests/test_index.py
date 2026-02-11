@@ -11,6 +11,7 @@ from cc_news_analyzer.index import (
     build_current_month_index_url,
     build_index_url,
     build_warc_urls,
+    download_warc_by_path,
     fetch_warc_paths,
     parse_month_date,
 )
@@ -226,6 +227,79 @@ class TestFetchWarcPaths(unittest.TestCase):
 
         fetch_warc_paths(2026, 2, new_dir)
         self.assertTrue(os.path.isdir(new_dir))
+
+
+class TestDownloadWarcByPath(unittest.TestCase):
+    """Tests for download_warc_by_path."""
+
+    def setUp(self):
+        """Create a temporary directory for test files."""
+        self.test_dir = os.path.join(os.path.dirname(__file__), ".test_tmp_dl")
+        os.makedirs(self.test_dir, exist_ok=True)
+
+    def tearDown(self):
+        """Clean up the temporary directory."""
+        import shutil
+
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+
+    @patch("cc_news_analyzer.index.urllib.request.urlretrieve")
+    def test_downloads_file_and_returns_path(self, mock_urlretrieve):
+        """Should build URL from relative path and download the file."""
+        warc_path = "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
+
+        def fake_download(url, dest):
+            with open(dest, "w") as f:
+                f.write("fake warc content")
+
+        mock_urlretrieve.side_effect = fake_download
+
+        result = download_warc_by_path(warc_path, self.test_dir)
+
+        expected_url = f"{CC_NEWS_BASE_URL}/{warc_path}"
+        mock_urlretrieve.assert_called_once_with(
+            expected_url,
+            os.path.join(self.test_dir, "CC-NEWS-20260204051206-06668.warc.gz"),
+        )
+        self.assertEqual(
+            result,
+            os.path.join(self.test_dir, "CC-NEWS-20260204051206-06668.warc.gz"),
+        )
+        self.assertTrue(os.path.exists(result))
+
+    @patch("cc_news_analyzer.index.urllib.request.urlretrieve")
+    def test_creates_dest_dir_if_missing(self, mock_urlretrieve):
+        """Should create the destination directory if it does not exist."""
+        new_dir = os.path.join(self.test_dir, "nested")
+        warc_path = "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
+
+        def fake_download(url, dest):
+            with open(dest, "w") as f:
+                f.write("fake")
+
+        mock_urlretrieve.side_effect = fake_download
+
+        download_warc_by_path(warc_path, new_dir)
+        self.assertTrue(os.path.isdir(new_dir))
+
+    def test_empty_path_raises(self):
+        """Should raise ValueError for an empty path."""
+        with self.assertRaises(ValueError):
+            download_warc_by_path("", self.test_dir)
+
+    def test_path_with_no_filename_raises(self):
+        """Should raise ValueError when path has no filename component."""
+        with self.assertRaises(ValueError):
+            download_warc_by_path("crawl-data/CC-NEWS/2026/02/", self.test_dir)
+
+    @patch("cc_news_analyzer.index.urllib.request.urlretrieve")
+    def test_network_error_propagates(self, mock_urlretrieve):
+        """Should propagate OSError from urlretrieve."""
+        mock_urlretrieve.side_effect = OSError("Network error")
+        warc_path = "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
+        with self.assertRaises(OSError):
+            download_warc_by_path(warc_path, self.test_dir)
 
 
 class TestBuildWarcUrls(unittest.TestCase):
