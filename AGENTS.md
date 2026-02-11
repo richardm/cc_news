@@ -82,12 +82,16 @@ If the linter or tests report failures, fix them before considering the change c
 
 - Always run `pytest` directly — never use `python -m pytest`
 - Do not prefix commands with `cd <dir> &&`. Use the shell's `working_directory` parameter instead.
+- Do not run `echo` in the terminal unless necessary — it is not whitelisted and requires human approval.
 
 ### Git workflow
 
 This project follows **trunk-based development**. All code changes must go through a pull request. Never commit directly to `main`.
 
-1. **Branch off of `main`** — always pull the latest `main` and create a new branch from it:
+1. **Branch off of `main`** — always fetch and fast-forward `main` before creating a new branch:
+   ```bash
+   git checkout main && git pull origin main
+   ```
    - Use a descriptive branch name (e.g. `feat/add-count-command`, `fix/index-url-parsing`, `ci/add-test-workflow`)
    - If you are already on a feature branch with recent changes related to the current task, continue working in that branch instead of creating a new one.
 2. **Work on the branch** following the TDD cycle above.
