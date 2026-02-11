@@ -22,6 +22,7 @@ dev = [
 
 [project.scripts]
 cc-news = "cc_news_analyzer.cli:cli"
+cc-news-docs = "cc_news_analyzer.generate_docs:main"
 
 [tool.setuptools.packages.find]
 include = ["cc_news_analyzer*"]

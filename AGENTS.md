@@ -77,3 +77,8 @@ If the linter or tests report failures, fix them before considering the change c
 - Test methods: `test_<scenario>` — descriptive names like `test_raises_on_missing_file`
 - Use `unittest.mock` to mock external dependencies (file I/O, network calls)
 - Each test should be independent — no shared mutable state between tests
+
+### Command conventions
+
+- Always run `pytest` directly — never use `python -m pytest`
+- Do not prefix commands with `cd <dir> &&`. Use the shell's `working_directory` parameter instead.
