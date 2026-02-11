@@ -82,3 +82,16 @@ If the linter or tests report failures, fix them before considering the change c
 
 - Always run `pytest` directly — never use `python -m pytest`
 - Do not prefix commands with `cd <dir> &&`. Use the shell's `working_directory` parameter instead.
+
+### Git workflow
+
+All code changes must go through a pull request. Never commit directly to `main`.
+
+1. **Create a feature branch** before making any changes:
+   - Use a descriptive branch name (e.g. `feat/add-count-command`, `fix/index-url-parsing`, `ci/add-test-workflow`)
+2. **Work on the branch** following the TDD cycle above.
+3. **Validate before committing** — run the full validation pipeline (`ruff check . --fix && ruff format . && pytest tests/ -v`) and ensure everything passes.
+4. **Commit and push** the branch to `origin` when it is ready for human review.
+   - Do not push until all tests pass and the change is complete.
+   - Do not consider the task finished until the commit is created and the branch is pushed.
+5. The human will open a PR and merge after review.
