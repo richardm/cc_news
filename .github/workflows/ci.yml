@@ -37,4 +37,10 @@ jobs:
         run: pip install -e ".[dev]"
 
       - name: Run tests
-        run: pytest tests/ -v
+        run: pytest tests/ -v --junitxml=test-results.xml
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: test-results.xml
