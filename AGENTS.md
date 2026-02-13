@@ -53,18 +53,14 @@ Write the minimal implementation to make the failing test pass. Keep functions s
 
 ### 3. Run validation
 
-After making any change, run the full validation pipeline:
+After making any change, run the full validation pipeline **as a single chained command**:
 
-```bash
-# Lint and auto-fix
-ruff check . --fix
+    ruff check . --fix && ruff format . && pytest tests/ -v
 
-# Format
-ruff format .
-
-# Run tests
-pytest tests/ -v
-```
+Do NOT run these as separate commands. The `&&` chaining ensures a failure in any
+step halts the pipeline. If the exit code is non-zero, do NOT commit or push.
+If pre-existing failures are unrelated to your changes, fix them — never ignore
+them and push anyway.
 
 ### 4. Fix any issues
 
@@ -76,7 +72,7 @@ If the linter or tests report failures, fix them before considering the change c
 |---------|----------------|
 | Any Python file changed | `ruff check . --fix && ruff format .` |
 | Any logic changed | `pytest tests/ -v` |
-| Before committing | `ruff check . --fix && ruff format . && pytest tests/ -v` |
+| Before committing | `ruff check . --fix && ruff format . && pytest tests/ -v` (single chained command — do NOT split) |
 
 ### Test conventions
 
@@ -88,9 +84,17 @@ If the linter or tests report failures, fix them before considering the change c
 
 ### Command conventions
 
+**CRITICAL: Never use `cd <dir> &&` to prefix shell commands.** Always use the
+shell tool's `working_directory` parameter instead. This is the #1 cause of
+commands requiring human approval, which blocks autonomous operation.
+
+- WRONG: `cd /workspaces/cc-news-analyzer && pytest tests/ -v`
+- RIGHT: `pytest tests/ -v` with working_directory="/workspaces/cc-news-analyzer"
+
 - Always run `pytest` directly — never use `python -m pytest`
-- Do not prefix commands with `cd <dir> &&`. Use the shell's `working_directory` parameter instead.
-- Do not run `echo` in the terminal unless necessary — it is not whitelisted and requires human approval.
+- Do not run `echo`, `python -c`, or other ad-hoc commands in the terminal.
+  Use the Read tool to inspect files and the Grep tool to search code.
+  Only run commands from the whitelisted set: `ruff`, `pytest`, `git`, `pip`.
 
 ### Git workflow
 
