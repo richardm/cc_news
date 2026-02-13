@@ -10,6 +10,14 @@ This is a Python-based CLI library that allows users to analyze Common Crawl New
 - Linter/formatter: [ruff](https://docs.astral.sh/ruff/) (configured in `pyproject.toml`)
 - Tests: [pytest](https://docs.pytest.org/) with tests in the `tests/` directory
 
+## Product Strategy
+
+Product direction is documented in `product/strategy-vision/`. Start with `index.md` for an overview of all strategy documents and when to consult each.
+
+Before making architectural or feature decisions, consult the relevant strategy documents -- especially `vision.md` (for the "why"), `principles.md` (for guardrails), and `decisions.md` (to avoid re-litigating settled questions).
+
+New product ideas go in `product/idea-inbox/`. Use the `refine-product-strategy` skill to process them into the strategy documents.
+
 ## Dev Mode
 For development purposes, this codebase should be dockerized and run in a VS Code devcontainer.
 
