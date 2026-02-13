@@ -37,9 +37,7 @@ class TestCountArticles(unittest.TestCase):
     @patch("cc_news_analyzer.warc.ArchiveIterator")
     @patch("builtins.open", new_callable=mock_open)
     @patch("cc_news_analyzer.warc.os.path.isfile", return_value=True)
-    def test_counts_only_response_records_with_html(
-        self, _mock_isfile, _mock_open, mock_iterator
-    ):
+    def test_counts_only_response_records_with_html(self, _mock_isfile, _mock_open, mock_iterator):
         """Should count only response records with text/html content type."""
         mock_iterator.return_value = [
             _make_record("response", "text/html"),
@@ -123,9 +121,7 @@ class TestCountArticles(unittest.TestCase):
     @patch("cc_news_analyzer.warc.ArchiveIterator")
     @patch("builtins.open", new_callable=mock_open)
     @patch("cc_news_analyzer.warc.os.path.isfile", return_value=True)
-    def test_response_without_http_headers(
-        self, _mock_isfile, _mock_open, mock_iterator
-    ):
+    def test_response_without_http_headers(self, _mock_isfile, _mock_open, mock_iterator):
         """Should not count response records that lack HTTP headers."""
         mock_iterator.return_value = [
             _make_record("response", has_http_headers=False),

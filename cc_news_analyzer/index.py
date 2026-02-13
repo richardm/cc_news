@@ -38,9 +38,7 @@ def parse_month_date(date_str: str) -> tuple[int, int]:
         month = int(mm_str)
         year = int(yyyy_str)
     except ValueError:
-        raise ValueError(
-            f"Invalid date format: {date_str!r}. Expected MM-YYYY."
-        ) from None
+        raise ValueError(f"Invalid date format: {date_str!r}. Expected MM-YYYY.") from None
 
     if month < 1 or month > 12:
         raise ValueError(f"Month must be between 1 and 12, got {month}")

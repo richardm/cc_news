@@ -24,6 +24,9 @@ jobs:
       - name: Check formatting
         run: ruff format --check .
 
+      - name: Check cyclomatic complexity
+        run: radon cc cc_news_analyzer/ -s -n C --total-average
+
   test:
     runs-on: ubuntu-latest
     permissions:
