@@ -195,6 +195,46 @@ class TestCountRecordsCmd(unittest.TestCase):
         self.assertNotEqual(result.exit_code, 0)
 
 
+class TestCountArticlesCmd(unittest.TestCase):
+    """Tests for the count-articles CLI command."""
+
+    def setUp(self):
+        """Set up the CLI test runner."""
+        self.runner = CliRunner()
+
+    def test_missing_file_argument(self):
+        """Should fail when no file argument is provided."""
+        result = self.runner.invoke(cli, ["count-articles"])
+        self.assertNotEqual(result.exit_code, 0)
+
+    def test_nonexistent_file(self):
+        """Should fail when the file does not exist."""
+        result = self.runner.invoke(cli, ["count-articles", "/no/such/file.warc"])
+        self.assertNotEqual(result.exit_code, 0)
+
+    @patch("cc_news_analyzer.cli._count_articles")
+    def test_outputs_article_count(self, mock_count):
+        """Should display the article count from count_articles."""
+        mock_count.return_value = 42
+
+        result = self.runner.invoke(cli, ["count-articles", __file__])
+
+        self.assertEqual(result.exit_code, 0)
+        mock_count.assert_called_once_with(__file__)
+        self.assertIn("42", result.output)
+        self.assertIn("Total articles", result.output)
+
+    @patch("cc_news_analyzer.cli._count_articles")
+    def test_outputs_zero_count(self, mock_count):
+        """Should display zero when no articles are found."""
+        mock_count.return_value = 0
+
+        result = self.runner.invoke(cli, ["count-articles", __file__])
+
+        self.assertEqual(result.exit_code, 0)
+        self.assertIn("0", result.output)
+
+
 class TestCliGroup(unittest.TestCase):
     """Tests for the CLI group itself."""
 

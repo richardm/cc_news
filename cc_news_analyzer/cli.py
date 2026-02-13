@@ -9,6 +9,7 @@ from cc_news_analyzer.index import (
     fetch_warc_paths,
     parse_month_date,
 )
+from cc_news_analyzer.warc import count_articles as _count_articles
 from cc_news_analyzer.warc import count_records as _count_records
 
 
@@ -24,6 +25,18 @@ def count_records_cmd(warc_file: str):
     """Count the number of WARC records with a WARC-Record-ID in a file."""
     total = _count_records(warc_file)
     click.echo(f"Total WARC records with WARC-Record-ID: {total}")
+
+
+@cli.command("count-articles")
+@click.argument("warc_file", type=click.Path(exists=True))
+def count_articles_cmd(warc_file: str):
+    """Count article records (HTML responses) in a WARC file.
+
+    Articles are WARC response records with an HTML content type.
+    This is distinct from count-records, which counts all WARC record types.
+    """
+    total = _count_articles(warc_file)
+    click.echo(f"Total articles: {total}")
 
 
 @cli.command("get-index")

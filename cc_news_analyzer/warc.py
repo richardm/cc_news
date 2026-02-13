@@ -67,3 +67,37 @@ def count_records(warc_path: str) -> int:
                 count += 1
 
     return count
+
+
+def count_articles(warc_path: str) -> int:
+    """Count article records in a WARC file.
+
+    Articles are defined as WARC ``response`` records whose HTTP
+    ``Content-Type`` header starts with ``text/html``.  This distinguishes
+    actual news articles from other record types (``request``, ``warcinfo``)
+    and non-HTML responses (images, JSON, etc.).
+
+    Args:
+        warc_path: Path to a ``.warc`` or ``.warc.gz`` file.
+
+    Returns:
+        The number of article (HTML response) records in the file.
+
+    Raises:
+        FileNotFoundError: If the WARC file does not exist.
+    """
+    if not os.path.isfile(warc_path):
+        raise FileNotFoundError(f"WARC file not found: {warc_path}")
+
+    count = 0
+    with open(warc_path, "rb") as f:
+        for record in ArchiveIterator(f):
+            if record.rec_headers.get_header("WARC-Type") != "response":
+                continue
+            if record.http_headers is None:
+                continue
+            content_type = record.http_headers.get_header("Content-Type", "")
+            if content_type.startswith("text/html"):
+                count += 1
+
+    return count
