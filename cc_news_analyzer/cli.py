@@ -45,8 +45,7 @@ class WarcFilePath(click.Path):
         # Validate extension
         if not path.endswith(WARC_EXTENSIONS):
             self.fail(
-                f"'{path}' does not appear to be a WARC file "
-                f"(expected .warc or .warc.gz extension).",
+                f"'{path}' does not appear to be a WARC file (expected .warc or .warc.gz extension).",
                 param,
                 ctx,
             )
@@ -68,8 +67,7 @@ def count_records_cmd(warc_file: str):
         total = _count_records(warc_file)
     except ArchiveLoadFailed as exc:
         raise click.ClickException(
-            f"Failed to read WARC file: {warc_file} "
-            f"-- is this a valid .warc or .warc.gz file?"
+            f"Failed to read WARC file: {warc_file} -- is this a valid .warc or .warc.gz file?"
         ) from exc
     click.echo(f"Total WARC records with WARC-Record-ID: {total}")
 
@@ -86,8 +84,7 @@ def count_articles_cmd(warc_file: str):
         total = _count_articles(warc_file)
     except ArchiveLoadFailed as exc:
         raise click.ClickException(
-            f"Failed to read WARC file: {warc_file} "
-            f"-- is this a valid .warc or .warc.gz file?"
+            f"Failed to read WARC file: {warc_file} -- is this a valid .warc or .warc.gz file?"
         ) from exc
     click.echo(f"Total articles: {total}")
 

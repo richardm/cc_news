@@ -184,12 +184,7 @@ class TestFetchWarcPaths(unittest.TestCase):
     @patch("cc_news_analyzer.index.urllib.request.urlretrieve")
     def test_skips_blank_lines(self, mock_urlretrieve):
         """Should skip blank lines in the index file."""
-        lines = (
-            "crawl-data/CC-NEWS/2026/02/file1.warc.gz\n"
-            "\n"
-            "crawl-data/CC-NEWS/2026/02/file2.warc.gz\n"
-            "\n"
-        )
+        lines = "crawl-data/CC-NEWS/2026/02/file1.warc.gz\n\ncrawl-data/CC-NEWS/2026/02/file2.warc.gz\n\n"
 
         def fake_download(url, dest):
             self._create_fake_gz(lines, dest)
@@ -342,19 +337,13 @@ class TestResolveWarcPath(unittest.TestCase):
 
     def test_strips_full_url_to_relative_path(self):
         """Should strip the base URL prefix from a full URL."""
-        url = (
-            "https://data.commoncrawl.org/"
-            "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
-        )
+        url = "https://data.commoncrawl.org/crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
         expected = "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
         self.assertEqual(resolve_warc_path(url), expected)
 
     def test_strips_url_with_trailing_slash_base(self):
         """Should handle base URL with trailing slash."""
-        url = (
-            "https://data.commoncrawl.org/"
-            "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
-        )
+        url = "https://data.commoncrawl.org/crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
         expected = "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
         self.assertEqual(resolve_warc_path(url), expected)
 
@@ -390,9 +379,7 @@ class TestResolveWarcPath(unittest.TestCase):
         try:
             index_path = os.path.join(index_dir, "warc.paths")
             with open(index_path, "w") as f:
-                f.write(
-                    "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260201022924-06627.warc.gz\n"
-                )
+                f.write("crawl-data/CC-NEWS/2026/02/CC-NEWS-20260201022924-06627.warc.gz\n")
 
             with self.assertRaises(ValueError) as ctx:
                 resolve_warc_path(

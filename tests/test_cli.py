@@ -212,15 +212,10 @@ class TestGetWarcCmd(unittest.TestCase):
     @patch("cc_news_analyzer.cli.resolve_warc_path")
     def test_resolves_full_url(self, mock_resolve, mock_download):
         """Should resolve a full URL before downloading."""
-        mock_resolve.return_value = (
-            "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
-        )
+        mock_resolve.return_value = "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
         mock_download.return_value = ".tmp/CC-NEWS-20260204051206-06668.warc.gz"
 
-        url = (
-            "https://data.commoncrawl.org/"
-            "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
-        )
+        url = "https://data.commoncrawl.org/crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
         result = self.runner.invoke(cli, ["get-warc", url])
 
         self.assertEqual(result.exit_code, 0)
@@ -234,14 +229,10 @@ class TestGetWarcCmd(unittest.TestCase):
     @patch("cc_news_analyzer.cli.resolve_warc_path")
     def test_resolves_bare_filename(self, mock_resolve, mock_download):
         """Should resolve a bare filename via the local index."""
-        mock_resolve.return_value = (
-            "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
-        )
+        mock_resolve.return_value = "crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"
         mock_download.return_value = ".tmp/CC-NEWS-20260204051206-06668.warc.gz"
 
-        result = self.runner.invoke(
-            cli, ["get-warc", "CC-NEWS-20260204051206-06668.warc.gz"]
-        )
+        result = self.runner.invoke(cli, ["get-warc", "CC-NEWS-20260204051206-06668.warc.gz"])
 
         self.assertEqual(result.exit_code, 0)
         mock_resolve.assert_called_once()
@@ -253,9 +244,7 @@ class TestGetWarcCmd(unittest.TestCase):
     @patch("cc_news_analyzer.cli.resolve_warc_path")
     def test_resolve_error_shows_friendly_message(self, mock_resolve):
         """Should show a friendly error when resolve_warc_path fails."""
-        mock_resolve.side_effect = ValueError(
-            "Could not resolve filename 'bad.warc.gz'"
-        )
+        mock_resolve.side_effect = ValueError("Could not resolve filename 'bad.warc.gz'")
 
         result = self.runner.invoke(cli, ["get-warc", "bad.warc.gz"])
 

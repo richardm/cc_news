@@ -15,7 +15,8 @@
                 "charliermarsh.ruff",
                 "ms-toolsai.jupyter",
                 "ms-toolsai.jupyter-keymap",
-                "ms-toolsai.jupyter-renderers"
+                "ms-toolsai.jupyter-renderers",
+                "google.colab"
             ],
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
