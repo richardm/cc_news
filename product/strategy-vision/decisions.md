@@ -81,6 +81,17 @@ Each entry follows this format:
 
 ---
 
+## warcio as WARC parsing library
+
+- **Date**: Pre-v0.1
+- **Decision**: Use `warcio` as the Python WARC file parsing library.
+- **Context**: A WARC parsing library is needed to read and iterate over CC-NEWS archive files. The founder's initial concept notes suggested the `warc` Python library as a starting point.
+- **Options considered**: (1) `warc` (older Python WARC library), (2) `warcio` (modern, actively maintained).
+- **Rationale**: `warcio` is actively maintained, provides a clean `ArchiveIterator` API for streaming through WARC records, and is the de facto standard for WARC processing in Python. It handles both `.warc` and `.warc.gz` files transparently.
+- **Rejected alternatives**: `warc` — older, less actively maintained, and lacks the streaming iterator API that `warcio` provides.
+
+---
+
 ## Google Colab for notebooks (not local Jupyter)
 
 - **Date**: Pre-v0.1
