@@ -20,7 +20,7 @@ Features currently being built.
 
 | Feature | Description | Status |
 |---------|-------------|--------|
-| (none) | | |
+| Article count | `count-articles` CLI command and `count_articles()` library function to count only articles (HTML response records) in a WARC file | Ready for review |
 
 ## Planned
 

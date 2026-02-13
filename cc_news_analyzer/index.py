@@ -118,6 +118,66 @@ def fetch_warc_paths(year: int, month: int, dest_dir: str) -> list[str]:
     return paths
 
 
+def resolve_warc_path(user_input: str, *, index_dir: str = ".tmp") -> str:
+    """Normalize a user-provided WARC identifier into a relative path.
+
+    Accepts three input formats:
+
+    1. **Relative path** (starts with ``crawl-data/``): returned as-is.
+    2. **Full URL** (starts with the CC-NEWS base URL): the base URL prefix
+       is stripped and the remainder is returned.
+    3. **Bare filename** (e.g. ``CC-NEWS-20260204051206-06668.warc.gz``):
+       looked up in the local index file at ``<index_dir>/warc.paths``.
+
+    Args:
+        user_input: A WARC relative path, full URL, or bare filename.
+        index_dir: Directory containing the ``warc.paths`` index file
+            (used for bare-filename lookups).  Defaults to ``".tmp"``.
+
+    Returns:
+        The resolved relative path (e.g.
+        ``"crawl-data/CC-NEWS/2026/02/CC-NEWS-20260204051206-06668.warc.gz"``).
+
+    Raises:
+        ValueError: If the input is empty, or a bare filename that cannot be
+            resolved from the local index.
+    """
+    if not user_input or not user_input.strip():
+        raise ValueError("WARC path must not be empty.")
+
+    value = user_input.strip()
+
+    # Case 1: Full URL -- strip the base URL prefix
+    url_prefix = CC_NEWS_BASE_URL + "/"
+    if value.startswith(url_prefix):
+        return value[len(url_prefix) :]
+
+    # Case 2: Relative path -- return as-is
+    if value.startswith("crawl-data/"):
+        return value
+
+    # Case 3: Bare filename -- look up in local index
+    index_file = os.path.join(index_dir, "warc.paths")
+    if not os.path.isfile(index_file):
+        raise ValueError(
+            f"Could not resolve filename '{value}': no local index found at "
+            f"'{index_file}'. Run 'cc-news get-index' first, then pass the "
+            f"full relative path."
+        )
+
+    with open(index_file) as f:
+        for line in f:
+            line = line.strip()
+            if line and os.path.basename(line) == value:
+                return line
+
+    raise ValueError(
+        f"Could not resolve filename '{value}' in the local index at "
+        f"'{index_file}'. Run 'cc-news get-index' to refresh the index, or "
+        f"pass the full relative path."
+    )
+
+
 def download_warc_by_path(warc_path: str, dest_dir: str) -> str:
     """Download a WARC file given its relative path in the CC-NEWS dataset.
 
