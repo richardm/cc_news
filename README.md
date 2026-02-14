@@ -1,6 +1,8 @@
+![CI Status](https://github.com/richardm/cc_news/actions/workflows/ci.yml/badge.svg)
+
 # Common Crawl News Analyzer
 
-This is a CLI tool that allows anyone to pull a CC-NEWS dataset and explore it.
+This is a CLI tool that allows anyone to pull a [CC-NEWS](https://commoncrawl.org/news-crawl) dataset and explore it.
 
 ## Supported Usage Modes
 1. The human analyst can use the Google Colab extension in VS Code / Cursor to download and explore WARC files in a remote Google Colab env. They will open a Jupyter notebook in VS Code -> Select Kernel -> Colab -> create or select a kernel, and then proceed to use the notebook.
@@ -17,16 +19,3 @@ To generate locally:
 ```
 cc-news-docs
 ```
-
----
-
-### TODO Later:
-
-Tools:
-* Init env
-* Clone a common crawl dataset for any given month
-* Unzip the files and extract the WARC files
-* Ideally, the env will be dockerized so it can run locally or in the cloud.
-* The temporary directory (which is currently .tmp) should be specified in a config or env file of some sort. Files should not hardcode this directory name. They should get it from this config file.
-
-Note: An Agent should be able to read the README to understand what tools it has and run those CLI commads. Only commands defined in the package.json file should be allowed.

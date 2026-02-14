@@ -1,1 +1,3 @@
-The temporary directory (which is currently .tmp) should be specified in a config or env file of some sort. Files should not hardcode this directory name. They should get it from this config file.
+- The temporary directory (which is currently .tmp) should be specified in a config or env file of some sort. Files should not hardcode this directory name. They should get it from this config file.
+- Consider complexipy for code complexity (instead of radon / ruff): https://github.com/rohaquinlop/complexipy
+- Update the product strategy skill and the "implement next" skill: when you start working on a task on the roadmap, move it from Planning to in progress. Once it is implemented, the final step before committing and pushing (after all validation steps pass) is to set the status to "PR created".
